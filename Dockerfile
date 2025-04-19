@@ -9,15 +9,19 @@ RUN apt-get update && \
     add-apt-repository multiverse && \
     apt-get update
 
-RUN apt-get install udev -y
+RUN apt-get install udev sudo iproute2 -y
 
+RUN apt-get update && apt-get install -y python3-pip && pip3 install pyyaml
 RUN apt-get update -y && apt-get upgrade -y 
 
 COPY sdkmanager_2.2.0-12028_amd64.deb /
 RUN apt install ./sdkmanager_2.2.0-12028_amd64.deb -y
 
-# Add user
-RUN useradd -ms /bin/bash user && echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+# Add user and set sudo password
+RUN useradd -ms /bin/bash user && \
+    echo "user:pass" | chpasswd && \
+    echo "user ALL=(ALL) ALL" >> /etc/sudoers
+
 USER user
 
 WORKDIR /workspace
