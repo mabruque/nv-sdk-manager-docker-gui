@@ -9,13 +9,15 @@ RUN apt-get update && \
     add-apt-repository multiverse && \
     apt-get update
 
-RUN apt-get install udev sudo iproute2 -y
+RUN apt-get install wget udev sudo iproute2 -y
 
 RUN apt-get update && apt-get install -y python3-pip && pip3 install pyyaml
 RUN apt-get update -y && apt-get upgrade -y 
 
-COPY sdkmanager_2.2.0-12028_amd64.deb /
-RUN apt install ./sdkmanager_2.2.0-12028_amd64.deb -y
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb
+RUN sudo dpkg -i cuda-keyring_1.1-1_all.deb
+RUN sudo apt-get update -y
+RUN apt-get -y install sdkmanager
 
 # Add user and set sudo password
 RUN useradd -ms /bin/bash user && \
